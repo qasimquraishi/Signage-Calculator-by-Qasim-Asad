@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signage Material Calculator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #1e3d59;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #dff0d8;
+      border: 1px solid #b2dba1;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .top-image {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .top-image img {
+      max-width: 250px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      background-color: white;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #1e88e5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1565c0;
+    }
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      font-style: italic;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-image">
+      <img src="sheet.png" alt="Sheet dimensions">
+    </div>
+    <h1>Signage Material Calculator</h1>
+    <label for="material">Select Material:</label>
+    <select id="material">
+      <option value="aluminum">Aluminum</option>
+      <option value="stainless">Stainless Steel</option>
+      <option value="acm">ACM (Aluminium Composite)</option>
+      <option value="pvc">PVC Foam Board</option>
+      <option value="wood">Wood</option>
+      <option value="cardboard">Cardboard</option>
+    </select>
+
+    <label for="unit">Unit of Measurement:</label>
+    <select id="unit">
+      <option value="mm">Millimeters (mm)</option>
+      <option value="in">Inches (in)</option>
+      <option value="ft">Feet (ft)</option>
+      <option value="m">Meters (m)</option>
+    </select>
+
+    <label for="length">Length:</label>
+    <input type="number" id="length" placeholder="Enter length">
+
+    <label for="width">Width:</label>
+    <input type="number" id="width" placeholder="Enter width">
+
+    <label for="height">Height:</label>
+    <input type="number" id="height" placeholder="Enter height">
+
+    <button onclick="calculate()">Calculate Weight and Price</button>
+
+    <div id="output" class="result" style="display:none;"></div>
+
+    <div class="footer">Made by Team Qasim / Asad</div>
+  </div>
+
+  <script>
+    const densities = {
+      aluminum: { density: 2.7, price: 700 }, // in PKR
+      stainless: { density: 8.0, price: 1150 },
+      acm: { density: 1.5, price: 480 },
+      pvc: { density: 0.6, price: 280 },
+      wood: { density: 0.7, price: 250 },
+      cardboard: { density: 0.3, price: 160 }
+    };
+
+    function convertToMeters(value, unit) {
+      if (unit === "mm") return value / 1000;
+      if (unit === "in") return value * 0.0254;
+      if (unit === "ft") return value * 0.3048;
+      return value; // meters
+    }
+
+    function calculate() {
+      const material = document.getElementById("material").value;
+      const unit = document.getElementById("unit").value;
+      const length = convertToMeters(parseFloat(document.getElementById("length").value), unit);
+      const width = convertToMeters(parseFloat(document.getElementById("width").value), unit);
+      const height = convertToMeters(parseFloat(document.getElementById("height").value), unit);
+
+      const volume = length * width * height; // in m³
+      const density = densities[material].density; // in g/cm³ or 1000 kg/m³
+      const pricePerKg = densities[material].price; // PKR per kg
+
+      const weightKg = volume * density * 1000; // Convert to kg
+      const price = weightKg * pricePerKg;
+
+      document.getElementById("output").style.display = "block";
+      document.getElementById("output").innerHTML = `
+        <strong>Weight:</strong> ${weightKg.toFixed(2)} kg<br>
+        <strong>Estimated Price:</strong> PKR ${price.toFixed(0)}
+      `;
+    }
+  </script>
+</body>
+</html>
